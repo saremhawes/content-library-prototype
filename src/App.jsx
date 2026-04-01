@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 
 // Rules (templates only):
 //   Published  → moderationState must be "Passed"
-//   Draft      → moderationState must be "For review"
+//   Draft      → moderationState must be "Pending review"
 //   Unpublished → moderationState is "Rejected" (or "Passed" if previously published then unpublished)
 // Courses have no moderation state (null).
 
@@ -10,32 +10,32 @@ const INITIAL_DATA = [
   { id: "cl-001", title: "Incident Report - First Response",       sourceContentId: "a1b2c3d4-0001", productId: "p-0001", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "incident-report-first-response",       downloads: 73353, created: "2021-03-12", moderationState: "Passed"     },
   { id: "cl-002", title: "Weekly Site Safety Inspection",          sourceContentId: "a1b2c3d4-0002", productId: "p-0002", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "weekly-site-safety-inspection",          downloads: 42783, created: "2021-04-05", moderationState: "Passed"     },
   { id: "cl-003", title: "Safety Walk Checklist",                  sourceContentId: "a1b2c3d4-0003", productId: "p-0003", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "safety-walk-checklist",                  downloads: 39766, created: "2021-05-18", moderationState: "Passed"     },
-  { id: "cl-004", title: "Fire Safety Inspection",                 sourceContentId: "a1b2c3d4-0004", productId: "p-0004", state: "Draft",       publisher: "Community",     type: "Template", slug: "fire-safety-inspection",                 downloads: 31200, created: "2022-01-09", moderationState: "For review" },
+  { id: "cl-004", title: "Fire Safety Inspection",                 sourceContentId: "a1b2c3d4-0004", productId: "p-0004", state: "Draft",       publisher: "Community",     type: "Template", slug: "fire-safety-inspection",                 downloads: 31200, created: "2022-01-09", moderationState: "Pending review" },
   { id: "cl-005", title: "Vehicle Pre-Start Checklist",            sourceContentId: "a1b2c3d4-0005", productId: "p-0005", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "vehicle-pre-start-checklist",            downloads: 28540, created: "2022-03-22", moderationState: "Passed"     },
   { id: "cl-006", title: "COVID-19 Workplace Screening",           sourceContentId: "a1b2c3d4-0006", productId: "p-0006", state: "Unpublished", publisher: "Community",     type: "Template", slug: "covid-19-workplace-screening",           downloads: 25100, created: "2022-06-14", moderationState: "Rejected"   },
   { id: "cl-007", title: "Forklift Pre-Operational Check",         sourceContentId: "a1b2c3d4-0007", productId: "p-0007", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "forklift-pre-operational-check",         downloads: 22300, created: "2022-08-30", moderationState: "Passed"     },
   { id: "cl-008", title: "Construction Site Hazard Assessment",    sourceContentId: "a1b2c3d4-0008", productId: "p-0008", state: "Published",   publisher: "SafetyCulture", type: "Course",   slug: "construction-site-hazard-assessment",    downloads: 19800, created: "2022-10-11", moderationState: null         },
-  { id: "cl-009", title: "Food Safety Audit",                      sourceContentId: "a1b2c3d4-0009", productId: "p-0009", state: "Draft",       publisher: "Community",     type: "Template", slug: "food-safety-audit",                      downloads: 17650, created: "2023-01-03", moderationState: "For review" },
-  { id: "cl-010", title: "PPE Compliance Checklist",               sourceContentId: "a1b2c3d4-0010", productId: "p-0010", state: "Draft",       publisher: "SafetyCulture", type: "Template", slug: "ppe-compliance-checklist",               downloads: 15400, created: "2023-02-28", moderationState: "For review" },
+  { id: "cl-009", title: "Food Safety Audit",                      sourceContentId: "a1b2c3d4-0009", productId: "p-0009", state: "Draft",       publisher: "Community",     type: "Template", slug: "food-safety-audit",                      downloads: 17650, created: "2023-01-03", moderationState: "Pending review" },
+  { id: "cl-010", title: "PPE Compliance Checklist",               sourceContentId: "a1b2c3d4-0010", productId: "p-0010", state: "Draft",       publisher: "SafetyCulture", type: "Template", slug: "ppe-compliance-checklist",               downloads: 15400, created: "2023-02-28", moderationState: "Pending review" },
   { id: "cl-011", title: "Electrical Safety Inspection",           sourceContentId: "a1b2c3d4-0011", productId: "p-0011", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "electrical-safety-inspection",           downloads: 14900, created: "2023-04-17", moderationState: "Passed"     },
   { id: "cl-012", title: "Warehouse Safety Walkthrough",           sourceContentId: "a1b2c3d4-0012", productId: "p-0012", state: "Published",   publisher: "Community",     type: "Course",   slug: "warehouse-safety-walkthrough",           downloads: 13200, created: "2023-05-22", moderationState: null         },
-  { id: "cl-013", title: "Manual Handling Risk Assessment",        sourceContentId: "a1b2c3d4-0013", productId: "p-0013", state: "Draft",       publisher: "SafetyCulture", type: "Template", slug: "manual-handling-risk-assessment",        downloads: 11800, created: "2023-07-09", moderationState: "For review" },
+  { id: "cl-013", title: "Manual Handling Risk Assessment",        sourceContentId: "a1b2c3d4-0013", productId: "p-0013", state: "Draft",       publisher: "SafetyCulture", type: "Template", slug: "manual-handling-risk-assessment",        downloads: 11800, created: "2023-07-09", moderationState: "Pending review" },
   { id: "cl-014", title: "Chemical Storage Compliance",            sourceContentId: "a1b2c3d4-0014", productId: "p-0014", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "chemical-storage-compliance",            downloads: 10500, created: "2023-09-01", moderationState: "Passed"     },
   { id: "cl-015", title: "Emergency Evacuation Drill",             sourceContentId: "a1b2c3d4-0015", productId: "p-0015", state: "Published",   publisher: "Community",     type: "Course",   slug: "emergency-evacuation-drill",             downloads:  9800, created: "2023-11-14", moderationState: null         },
-  { id: "cl-016", title: "Scaffold Inspection Checklist",          sourceContentId: "a1b2c3d4-0016", productId: "p-0016", state: "Draft",       publisher: "SafetyCulture", type: "Template", slug: "scaffold-inspection-checklist",          downloads:  8700, created: "2024-01-20", moderationState: "For review" },
+  { id: "cl-016", title: "Scaffold Inspection Checklist",          sourceContentId: "a1b2c3d4-0016", productId: "p-0016", state: "Draft",       publisher: "SafetyCulture", type: "Template", slug: "scaffold-inspection-checklist",          downloads:  8700, created: "2024-01-20", moderationState: "Pending review" },
   { id: "cl-017", title: "Noise Exposure Risk Assessment",         sourceContentId: "a1b2c3d4-0017", productId: "p-0017", state: "Unpublished", publisher: "Community",     type: "Template", slug: "noise-exposure-risk-assessment",         downloads:  7600, created: "2024-02-05", moderationState: "Rejected"   },
   { id: "cl-018", title: "Slip, Trip and Fall Prevention",         sourceContentId: "a1b2c3d4-0018", productId: "p-0018", state: "Published",   publisher: "SafetyCulture", type: "Course",   slug: "slip-trip-fall-prevention",             downloads:  6900, created: "2024-03-18", moderationState: null         },
   { id: "cl-019", title: "Working at Heights Permit",              sourceContentId: "a1b2c3d4-0019", productId: "p-0019", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "working-at-heights-permit",              downloads:  5800, created: "2024-04-30", moderationState: "Passed"     },
   { id: "cl-020", title: "First Aid Kit Inspection",               sourceContentId: "a1b2c3d4-0020", productId: "p-0020", state: "Unpublished", publisher: "Community",     type: "Template", slug: "first-aid-kit-inspection",               downloads:  4400, created: "2024-06-12", moderationState: "Rejected"   },
   { id: "cl-021", title: "Hot Work Permit",                        sourceContentId: "a1b2c3d4-0021", productId: "p-0021", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "hot-work-permit",                        downloads:  3900, created: "2024-07-25", moderationState: "Passed"     },
-  { id: "cl-022", title: "Office Ergonomics Assessment",           sourceContentId: "a1b2c3d4-0022", productId: "p-0022", state: "Draft",       publisher: "Community",     type: "Template", slug: "office-ergonomics-assessment",           downloads:  3200, created: "2024-08-08", moderationState: "For review" },
+  { id: "cl-022", title: "Office Ergonomics Assessment",           sourceContentId: "a1b2c3d4-0022", productId: "p-0022", state: "Draft",       publisher: "Community",     type: "Template", slug: "office-ergonomics-assessment",           downloads:  3200, created: "2024-08-08", moderationState: "Pending review" },
   { id: "cl-023", title: "Lone Worker Safety Check",               sourceContentId: "a1b2c3d4-0023", productId: "p-0023", state: "Published",   publisher: "SafetyCulture", type: "Course",   slug: "lone-worker-safety-check",               downloads:  2700, created: "2024-09-14", moderationState: null         },
   { id: "cl-024", title: "Contractor Induction Checklist",         sourceContentId: "a1b2c3d4-0024", productId: "p-0024", state: "Published",   publisher: "SafetyCulture", type: "Template", slug: "contractor-induction-checklist",         downloads:  2100, created: "2024-10-02", moderationState: "Passed"     },
   { id: "cl-025", title: "Respiratory Protection Program",         sourceContentId: "a1b2c3d4-0025", productId: "p-0025", state: "Unpublished", publisher: "Community",     type: "Course",   slug: "respiratory-protection-program",         downloads:  1400, created: "2024-11-19", moderationState: null         },
 ];
 
 const PRODUCT_STATES     = ["all", "Published", "Unpublished", "Draft"];
-const MODERATION_STATES  = ["all", "Passed", "Rejected", "For review"];
+const MODERATION_STATES  = ["all", "Passed", "Rejected", "Pending review"];
 const PRODUCT_TYPES      = ["All", "Template", "Course"];
 const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
 
@@ -48,7 +48,7 @@ const STATE_COLORS = {
 const MODERATION_COLORS = {
   Passed:       { bg: "#e6f4ea", text: "#1e7e34" },
   Rejected:     { bg: "#fde8e8", text: "#c0392b" },
-  "For review": { bg: "#fff3cd", text: "#856404" },
+  "Pending review": { bg: "#fff3cd", text: "#856404" },
 };
 
 function StateChip({ state }) {
@@ -190,7 +190,7 @@ export default function ContentLibrarySearch() {
 
   // Count of templates currently awaiting moderation review (independent of filters)
   const forReviewCount = useMemo(
-    () => data.filter(d => d.type === "Template" && d.moderationState === "For review").length,
+    () => data.filter(d => d.type === "Template" && d.moderationState === "Pending review").length,
     [data]
   );
 
@@ -218,7 +218,7 @@ export default function ContentLibrarySearch() {
   };
 
   const handleForReviewClick = () => {
-    const updated = { ...EMPTY_FILTERS, moderationState: "For review", productType: "Template" };
+    const updated = { ...EMPTY_FILTERS, moderationState: "Pending review", productType: "Template" };
     setFilters(updated);
     setActiveFilters(updated);
     setPage(1);
@@ -256,7 +256,7 @@ export default function ContentLibrarySearch() {
   ];
 
   const getMenuActions = (row) => {
-    if (row.type === "Template" && row.moderationState === "For review")
+    if (row.type === "Template" && row.moderationState === "Pending review")
       return [
         { label: "Approve and Publish", danger: false, onClick: () => handleApprove(row.id) },
         { label: "Reject", danger: true,  onClick: () => { setRejectModal({ open: true, itemId: row.id }); setOpenMenu(null); } },
