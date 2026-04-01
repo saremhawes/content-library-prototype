@@ -459,10 +459,10 @@ export default function ContentLibrarySearch() {
                     </td>
                     <td style={{ padding: "9px 14px", color: "#777", fontFamily: "monospace", fontSize: 11.5 }}>{row.sourceContentId}</td>
                     <td style={{ padding: "9px 14px", color: "#777", fontFamily: "monospace", fontSize: 11.5 }}>{row.productId}</td>
-                    <td style={{ padding: "9px 14px" }}><StateChip state={row.state} /></td>
+                    <td style={{ padding: "9px 14px", color: "#333" }}>{row.state}</td>
                     <td style={{ padding: "9px 14px" }}><ModerationChip state={row.moderationState} /></td>
                     <td style={{ padding: "9px 14px" }}>{row.publisher}</td>
-                    <td style={{ padding: "9px 14px" }}><TypeChip type={row.type} /></td>
+                    <td style={{ padding: "9px 14px", color: "#333" }}>{row.type}</td>
                     <td style={{ padding: "9px 14px", color: "#777", maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{row.slug}</td>
                     <td style={{ padding: "9px 14px", fontWeight: 600 }}>{row.downloads.toLocaleString()}</td>
                     <td style={{ padding: "9px 14px", color: "#777" }}>{row.created}</td>
